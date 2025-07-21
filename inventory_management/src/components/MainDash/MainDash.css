@@ -1,0 +1,12 @@
+.MainDash {
+  display: flex;
+  flex-direction: column;
+  margin: 40px;
+}
+
+.new-order {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+}

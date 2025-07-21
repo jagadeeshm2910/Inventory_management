@@ -1,0 +1,112 @@
+.orders-container {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.orders-title {
+  font-size: 1.5rem;
+  color: #333;
+  align-items: left;
+}
+
+.date-summary-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  margin-bottom: 18px;
+}
+
+.date-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0px 0px;
+  /* Remove left padding so it aligns with summary */
+}
+
+.orders-label {
+  font-size: 1rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.orders-date-input {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+  width: 220px;
+  background: #f9f9f9;
+}
+
+.orders-date-input:focus {
+  border: 1.5px solid #1976d2;
+  background: #fff;
+}
+
+/* Make the react-datepicker popup wider and more modern */
+.react-datepicker {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  font-size: 1.05rem;
+  /* Remove default top offset */
+  top: 0 !important;
+  left: 0 !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+.react-datepicker-popper {
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 9999;
+}
+
+.react-datepicker__header {
+  background-color: #e3f2fd;
+  border-bottom: 1px solid #90caf9;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: #1976d2;
+  color: #fff;
+}
+
+.react-datepicker__time-container {
+  border-left: 1px solid #90caf9;
+}
+
+.react-datepicker__time {
+  background: #f5faff;
+}
+
+.react-datepicker__close-icon::after {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 700px) {
+  .date-summary-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

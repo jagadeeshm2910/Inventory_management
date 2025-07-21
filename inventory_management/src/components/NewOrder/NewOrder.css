@@ -1,0 +1,74 @@
+.input-form {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-dialog {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for forms */
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.table-dialog {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.flavor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.flavor-table th,
+.flavor-table td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 8px;
+}
+
+.heading-subhead {
+  font-size: 17px;
+  font-weight: Bold;
+}
+
+.flavor-table th {
+  background-color: #f4f4f4;
+}
+
+.flavor-table input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.inline-fields {
+  display: flex;
+  gap: 10px; /* Space between the fields */
+  align-items: center; /* Align labels and inputs vertically */
+  /* Add spacing below the row */
+}
+
+.inline-fields .field {
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  flex: 1; /* Allow fields to grow evenly */
+}
+
+.input-form {
+  padding-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%; /* Ensure inputs take full width of their container */
+  box-sizing: border-box;
+}

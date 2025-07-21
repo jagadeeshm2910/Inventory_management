@@ -1,0 +1,62 @@
+.MuiTableRow-root > * {
+  padding: 10px;
+  /* border-radius: 1rem !important; */
+}
+
+.MuiTableRow-root.MuiTableRow-head > * {
+  font-weight: bold !important;
+  padding: 12px !important;
+}
+
+.Table td,
+th {
+  border: none !important;
+}
+
+.Table:first-child {
+  border-radius: 0.7rem !important;
+}
+.status {
+  padding: 8px;
+  border-radius: 9px;
+}
+
+.Details {
+  color: #00b5ff !important;
+}
+
+@media screen and (max-width: 1200px) {
+  .Table {
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .Table {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 23rem;
+  }
+}
+.MuiTableHead-root .MuiTableRow-root {
+  background: linear-gradient(90deg, #e0ffe8 0%, #e0f7ff 100%);
+}
+
+.MuiTableBody-root .MuiTableRow-root {
+  background: #f6fef7; /* extremely light green */
+}
+
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background: #e3f7fa; /* very light blue on hover */
+}
+
+.MuiPaper-root.MuiTableContainer-root {
+  /* Your custom styles here */
+  height: 494px;
+  overflow: auto;
+  background: #fafdff; /* Example: very light background */
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  /* Add any other styles you want */
+}
