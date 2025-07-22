@@ -1,5 +1,5 @@
 import React from "react";
-import "./Sidebar.css";
+import "./sidebar.css";
 import { useState } from "react";
 import { SidebarData } from "../Data/Data";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
