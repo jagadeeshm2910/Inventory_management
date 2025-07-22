@@ -1,7 +1,6 @@
 [build]
-  base = "inventory_management"
-  publish = "inventory_management/dist"
   command = "npm run build"
+  publish = "dist"
 
 [dev]
   command = "npm run dev"
