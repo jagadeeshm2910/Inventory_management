@@ -5,7 +5,7 @@ from app import models, database
 
 app = FastAPI()
 
-origins = ["http://localhost:5175"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,6 +17,10 @@ app.add_middleware(
 
 
 app.include_router(new_order.router, prefix="/orders", tags=["orders"])
+
+@app.get("/")
+def root():
+    return {"message": "FastAPI backend is running!"}
 
 @app.on_event("startup")
 def startup():

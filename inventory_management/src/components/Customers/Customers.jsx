@@ -16,7 +16,7 @@ function Customers() {
   React.useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/orders/customers");
+        const res = await axios.get("https://inventory-management-5-9dr8.onrender.com/orders/customers");
         setCustomers(res.data);
       } catch {
         setCustomers([]);
@@ -36,14 +36,14 @@ function Customers() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:8000/orders/customers", {
+      await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/customers", {
         name: form.name,
         caterer: form.caterer,
         address: form.address,
         contact: form.contact,
       });
       // Refetch customers after adding
-      const res = await axios.get("http://localhost:8000/orders/customers");
+      const res = await axios.get("https://inventory-management-5-9dr8.onrender.com/orders/customers");
       setCustomers(res.data);
       handleClose();
     } catch {

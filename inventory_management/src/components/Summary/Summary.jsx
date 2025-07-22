@@ -33,7 +33,7 @@ function Summary({ selectedDate, refreshKey }) {
     const dateToUse = selectedDate || new Date();
     const fetchSummary = async () => {
       try {
-        const res = await axios.post("http://localhost:8000/orders/summary", {
+        const res = await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/summary", {
           date: dateToUse.toISOString().slice(0, 10),
         });
         setSummary(res.data);
@@ -61,7 +61,7 @@ function Summary({ selectedDate, refreshKey }) {
   const handleOpenFlavorDialog = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:8000/orders/flavour-summary-details",
+        "https://inventory-management-5-9dr8.onrender.com/orders/flavour-summary-details",
         {
           date: (selectedDate || new Date()).toISOString().slice(0, 10),
         }

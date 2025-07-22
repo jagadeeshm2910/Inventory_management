@@ -60,7 +60,7 @@ export default function BasicTable({ selectedDate, refreshKey }) {
     try {
       let res;
       const dateToUse = selectedDate || new Date();
-      res = await axios.post("http://localhost:8000/orders/by-date", {
+      res = await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/by-date", {
         date: dateToUse.toISOString().slice(0, 10),
       });
       setOrders(res.data);
@@ -77,7 +77,7 @@ export default function BasicTable({ selectedDate, refreshKey }) {
   // Update status in backend
   const updateStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`http://localhost:8000/orders/${id}/status`, {
+      await axios.patch(`https://inventory-management-5-9dr8.onrender.com/orders/${id}/status`, {
         status: newStatus,
       });
       fetchOrders(); // refresh table
@@ -92,7 +92,7 @@ export default function BasicTable({ selectedDate, refreshKey }) {
   // Delete order
   const deleteOrder = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/orders/${id}`);
+      await axios.delete(`https://inventory-management-5-9dr8.onrender.com/orders/${id}`);
       setDeleteDialogOpen(false);
       fetchOrders(); // refresh table
     } catch {
@@ -114,7 +114,7 @@ export default function BasicTable({ selectedDate, refreshKey }) {
     setSelectedOrder(order);
     setOrderDialogOpen(true);
     try {
-      const res = await axios.post("http://localhost:8000/orders/details", {
+      const res = await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/details", {
         order_id: order.id,
       });
       setOrderDetails(res.data);

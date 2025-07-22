@@ -153,7 +153,7 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
 
   const handleCatererFocus = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/orders/caterers");
+      const res = await axios.get("https://inventory-management-5-9dr8.onrender.com/orders/caterers");
       // API returns { customers: [ ... ] }
       const customers = Array.isArray(res.data.customers) ? res.data.customers : [];
       setCatererOptions(customers.map((c) => c.caterer).filter(Boolean));
@@ -217,12 +217,12 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
     try {
       if (orderData && orderData.id) {
         await axios.patch(
-          `http://localhost:8000/orders/${orderData.id}`,
+          `https://inventory-management-5-9dr8.onrender.com/orders/${orderData.id}`,
           order
         );
         alert("Order updated!");
       } else {
-        await axios.post("http://localhost:8000/orders", order);
+        await axios.post("https://inventory-management-5-9dr8.onrender.com/orders", order);
         alert("Order submitted!");
       }
       setOpen(false);
