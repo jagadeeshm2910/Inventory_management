@@ -6,9 +6,9 @@ function Customers() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
-    catering: "",
+    caterer: "",
     address: "",
-    phone: "",
+    contact: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +28,7 @@ function Customers() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
-    setForm({ name: "", catering: "", address: "", phone: "" });
+    setForm({ name: "", caterer: "", address: "", contact: "" });
   };
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -94,13 +94,13 @@ function Customers() {
             <th style={{ padding: "10px", border: "1px solid #eee" }}>S.no</th>
             <th style={{ padding: "10px", border: "1px solid #eee" }}>Name</th>
             <th style={{ padding: "10px", border: "1px solid #eee" }}>
-              Catering Name
+              Caterer Name
             </th>
             <th style={{ padding: "10px", border: "1px solid #eee" }}>
               Address
             </th>
             <th style={{ padding: "10px", border: "1px solid #eee" }}>
-              Phone Number
+              Contact Number
             </th>
           </tr>
         </thead>
@@ -180,10 +180,10 @@ function Customers() {
                 border: "1px solid #bbb",
               }}
             />
-            <label style={{ marginBottom: 6 }}>Catering Name</label>
+            <label style={{ marginBottom: 6 }}>caterer Name</label>
             <input
-              name="catering"
-              value={form.catering}
+              name="caterer"
+              value={form.caterer}
               onChange={handleChange}
               required
               style={{
@@ -206,10 +206,10 @@ function Customers() {
                 border: "1px solid #bbb",
               }}
             />
-            <label style={{ marginBottom: 6 }}>Phone Number</label>
+            <label style={{ marginBottom: 6 }}>Contact Number</label>
             <input
-              name="phone"
-              value={form.phone}
+              name="contact"
+              value={form.contact}
               onChange={handleChange}
               required
               style={{
