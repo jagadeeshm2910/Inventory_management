@@ -77,33 +77,44 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
   const [customerMap, setCustomerMap] = useState({});
 
   // Fill form and flavorTable if orderData is provided
-  React.useEffect(() => {
-    if (orderData) {
-      setForm({
-        name: orderData.name || "",
-        caterer: orderData.caterer || "",
-        deliveryDetails: orderData.deliveryDetails || "",
-        contact: orderData.contact || "",
-        deliveryDate: orderData.deliveryDate || orderData.delivery_date || "",
-        deliveryTime: orderData.deliveryTime || orderData.delivery_time || "",
-        deliveryLocation:
-          orderData.deliveryLocation || orderData.delivery_location || "",
-        status: orderData.status || "",
-      });
-      // Fill flavorTable
-      const newTable = {};
-      if (orderData.flavors) {
-        orderData.flavors.forEach((f) => {
+React.useEffect(() => {
+  if (orderData) {
+    setForm({
+      name: orderData.name || "",
+      caterer: orderData.caterer || "",
+      deliveryDetails: orderData.deliveryDetails || "",
+      contact: orderData.contact || "",
+      deliveryDate: orderData.deliveryDate || orderData.delivery_date || "",
+      deliveryTime: orderData.deliveryTime || orderData.delivery_time || "",
+      deliveryLocation:
+        orderData.deliveryLocation || orderData.delivery_location || "",
+      status: orderData.status || "",
+    });
+
+    // Fill flavorTable
+    const newTable = {};
+    if (orderData.flavors) {
+      orderData.flavors.forEach((f) => {
+        // Special flavor: no size or empty size
+        const isSpecial = f.quantities.length === 1 && f.quantities[0].size === "";
+
+        if (isSpecial) {
+          newTable[f.flavor] = {
+            qty: f.quantities[0].qty || "",
+          };
+        } else {
           newTable[f.flavor] = {};
           f.quantities.forEach((q) => {
             newTable[f.flavor][q.size] = { qty: q.qty };
           });
-        });
-        setFlavorTable(newTable);
-      }
-      setOpen(true);
+        }
+      });
+      setFlavorTable(newTable);
     }
-  }, [orderData]);
+
+    setOpen(true);
+  }
+}, [orderData]);
 
   const handleOpenClose = () => {
     setOpen((prev) => !prev);
@@ -371,26 +382,21 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
                     ))}
                     {/* Special flavors with dropdown for quantity */}
                     {specialFlavors.map((flavor) => (
-                      <tr key={specialFlavors.name}>
-                        <td>{specialFlavors.name}</td>
+                      <tr key={flavor.name}>
+                        <td>{flavor.name}</td>
                         <td colSpan={4}>
                           <input
                             type="number"
                             min="0"
-                            name={`${specialFlavors.name}-qty`}
+                            name={`${flavor.name}-qty`}
                             placeholder="Qty"
                             style={{ width: "60px" }}
-                            value={
-                              flavorTable[specialFlavors.name] &&
-                              flavorTable[specialFlavors.name].qty
-                                ? flavorTable[specialFlavors.name].qty
-                                : ""
-                            }
+                            value={flavorTable[flavor.name]?.qty || ""}
                             onChange={(e) =>
                               setFlavorTable((prev) => ({
                                 ...prev,
-                                [specialFlavors.name]: {
-                                  ...prev[specialFlavors.name],
+                                [flavor.name]: {
+                                  ...prev[flavor.name],
                                   qty: e.target.value,
                                 },
                               }))
