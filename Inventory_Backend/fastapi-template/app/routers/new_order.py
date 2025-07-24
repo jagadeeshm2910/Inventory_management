@@ -91,7 +91,7 @@ def get_order_details(order_id: int = Body(..., embed=True), db: Session = Depen
 @router.post("/summary")
 def get_order_summary(date: dict = Body(...), db: Session = Depends(get_db)):
     selected_date = date.get("date")
-    if not selected_date:
+    if not selected_date or selected_date.strip() == "":
         raise HTTPException(status_code=400, detail="Date is required")
     orders = db.query(models.OrderDetails).filter(models.OrderDetails.delivery_date == selected_date).all()
     total = len(orders)
