@@ -195,7 +195,13 @@ export default function BasicTable({ selectedDate, refreshKey }) {
                   <TableCell align="left">{row.caterer}</TableCell>
                   <TableCell align="left">{row.name}</TableCell>
                   <TableCell align="left">
-                    {row.delivery_time || row.deliveryTime || "-"}
+                    {row.delivery_time || row.deliveryTime
+                      ? new Date(`1970-01-01T${row.delivery_time || row.deliveryTime}`).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })
+                      : "-"}
                   </TableCell>
                   <TableCell align="left">
                     {row.delivery_location || row.deliveryLocation}
