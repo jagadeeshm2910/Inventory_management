@@ -15,7 +15,7 @@ class OrderCreateSchema(BaseModel):
     caterer: str
     deliveryDetails: str
     contact: str
-    deliveryDate: str
+    deliveryDate: constr(min_length=1)
     deliveryTime: str
     deliveryLocation: str
     flavors: List[FlavorSchema]

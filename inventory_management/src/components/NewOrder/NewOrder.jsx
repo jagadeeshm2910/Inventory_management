@@ -184,6 +184,11 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+  if (!form.deliveryDate || form.deliveryDate.trim() === "") {
+    alert("Please select a delivery date!");
+    return;
+  }
     // Prepare data
     const order = {
       ...form,
