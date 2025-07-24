@@ -63,6 +63,7 @@ def update_order(order_id: int, order: schemas.OrderCreateSchema, db: Session = 
     order_full.caterer = order.caterer
     order_full.delivery_location = order.deliveryLocation
     order_full.delivery_date = order.deliveryDate
+    order_full.delivery_time = order.deliveryTime
     order_full.status = order_full.status  # Keep status as is, or update if needed
     order_full.delivery_details = order.deliveryDetails
     order_full.contact = order.contact
@@ -83,6 +84,7 @@ def get_order_details(order_id: int = Body(..., embed=True), db: Session = Depen
         "deliveryDetails": order_full.delivery_details,
         "contact": order_full.contact,
         "deliveryDate": order_full.delivery_date,
+        "deliveryTime": order_full.delivery_time,  # Include delivery time
         "deliveryLocation": order_full.delivery_location,
         "status": order_full.status,
         "flavors": order_full.flavors
