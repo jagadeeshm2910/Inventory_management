@@ -371,26 +371,26 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
                     ))}
                     {/* Special flavors with dropdown for quantity */}
                     {specialFlavors.map((flavor) => (
-                      <tr key={flavor.name}>
-                        <td>{flavor.name}</td>
+                      <tr key={specialFlavors.name}>
+                        <td>{specialFlavors.name}</td>
                         <td colSpan={4}>
                           <input
                             type="number"
                             min="0"
-                            name={`${flavor.name}-qty`}
+                            name={`${specialFlavors.name}-qty`}
                             placeholder="Qty"
                             style={{ width: "60px" }}
                             value={
-                              flavorTable[flavor.name] &&
-                              flavorTable[flavor.name].qty
-                                ? flavorTable[flavor.name].qty
+                              flavorTable[specialFlavors.name] &&
+                              flavorTable[specialFlavors.name].qty
+                                ? flavorTable[specialFlavors.name].qty
                                 : ""
                             }
                             onChange={(e) =>
                               setFlavorTable((prev) => ({
                                 ...prev,
-                                [flavor.name]: {
-                                  ...prev[flavor.name],
+                                [specialFlavors.name]: {
+                                  ...prev[specialFlavors.name],
                                   qty: e.target.value,
                                 },
                               }))
