@@ -33,9 +33,12 @@ function Summary({ selectedDate, refreshKey }) {
     const dateToUse = selectedDate || new Date();
     const fetchSummary = async () => {
       try {
-        const res = await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/summary", {
-          date: dateToUse.toISOString().slice(0, 10),
-        });
+        const res = await axios.post(
+          "https://inventory-management-5-9dr8.onrender.com/orders/summary",
+          {
+            date: dateToUse.toISOString().slice(0, 10),
+          }
+        );
         setSummary(res.data);
       } catch (err) {
         setSummary({

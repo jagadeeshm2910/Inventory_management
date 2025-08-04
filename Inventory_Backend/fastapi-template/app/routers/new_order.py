@@ -63,7 +63,6 @@ def update_order(order_id: int, order: schemas.OrderCreateSchema, db: Session = 
     order_full.caterer = order.caterer
     order_full.delivery_location = order.deliveryLocation
     order_full.delivery_date = order.deliveryDate
-    order_full.delivery_time = order.deliveryTime
     order_full.status = order_full.status  # Keep status as is, or update if needed
     order_full.delivery_details = order.deliveryDetails
     order_full.contact = order.contact
@@ -216,3 +215,23 @@ def get_caterers(db: Session = Depends(get_db)):
         for c in customers
     ]
     return {"customers": customer_list}
+
+@router.get("/customer-orders/{customer_id}")
+def get_customer_orders(customer_id: int, db: Session = Depends(get_db)):
+    # Use caterer name to match orders, since OrderFull does not have customer_id
+    customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    orders = db.query(models.OrderFull).filter(models.OrderFull.caterer == customer.caterer).order_by(models.OrderFull.delivery_date.desc()).all()
+    result = []
+    for order in orders:
+        result.append({
+            "id": order.id,
+            "date": order.delivery_date,
+            "delivery_time": order.delivery_time,
+            "delivery_location": order.delivery_location,
+            "status": order.status,
+            "flavors": order.flavors,
+            # Add more fields if needed
+        })
+    return result

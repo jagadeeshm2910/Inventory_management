@@ -60,9 +60,12 @@ export default function BasicTable({ selectedDate, refreshKey }) {
     try {
       let res;
       const dateToUse = selectedDate || new Date();
-      res = await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/by-date", {
-        date: dateToUse.toISOString().slice(0, 10),
-      });
+      res = await axios.post(
+        "https://inventory-management-5-9dr8.onrender.com/orders/by-date",
+        {
+          date: dateToUse.toISOString().slice(0, 10),
+        }
+      );
       setOrders(res.data);
     } catch {
       setOrders([]);
@@ -77,9 +80,12 @@ export default function BasicTable({ selectedDate, refreshKey }) {
   // Update status in backend
   const updateStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`https://inventory-management-5-9dr8.onrender.com/orders/${id}/status`, {
-        status: newStatus,
-      });
+      await axios.patch(
+        `https://inventory-management-5-9dr8.onrender.com/orders/${id}/status`,
+        {
+          status: newStatus,
+        }
+      );
       fetchOrders(); // refresh table
       if (typeof window !== "undefined" && window.dispatchEvent) {
         window.dispatchEvent(new Event("order-status-updated"));
@@ -92,7 +98,9 @@ export default function BasicTable({ selectedDate, refreshKey }) {
   // Delete order
   const deleteOrder = async (id) => {
     try {
-      await axios.delete(`https://inventory-management-5-9dr8.onrender.com/orders/${id}`);
+      await axios.delete(
+        `https://inventory-management-5-9dr8.onrender.com/orders/${id}`
+      );
       setDeleteDialogOpen(false);
       fetchOrders(); // refresh table
     } catch {
@@ -114,9 +122,12 @@ export default function BasicTable({ selectedDate, refreshKey }) {
     setSelectedOrder(order);
     setOrderDialogOpen(true);
     try {
-      const res = await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/details", {
-        order_id: order.id,
-      });
+      const res = await axios.post(
+        "https://inventory-management-5-9dr8.onrender.com/orders/details",
+        {
+          order_id: order.id,
+        }
+      );
       setOrderDetails(res.data);
     } catch {
       setOrderDetails(null);
@@ -196,7 +207,9 @@ export default function BasicTable({ selectedDate, refreshKey }) {
                   <TableCell align="left">{row.name}</TableCell>
                   <TableCell align="left">
                     {row.delivery_time || row.deliveryTime
-                      ? new Date(`1970-01-01T${row.delivery_time || row.deliveryTime}`).toLocaleTimeString([], {
+                      ? new Date(
+                          `1970-01-01T${row.delivery_time || row.deliveryTime}`
+                        ).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                           hour12: true,

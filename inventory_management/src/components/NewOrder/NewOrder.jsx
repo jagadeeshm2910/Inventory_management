@@ -77,44 +77,70 @@ function NewOrder({ open, onClose, orderData, onOrderSubmitted }) {
   const [customerMap, setCustomerMap] = useState({});
 
   // Fill form and flavorTable if orderData is provided
-React.useEffect(() => {
-  if (orderData) {
-    setForm({
-      name: orderData.name || "",
-      caterer: orderData.caterer || "",
-      deliveryDetails: orderData.deliveryDetails || "",
-      contact: orderData.contact || "",
-      deliveryDate: orderData.deliveryDate || orderData.delivery_date || "",
-      deliveryTime: orderData.deliveryTime || orderData.delivery_time || "",
-      deliveryLocation:
-        orderData.deliveryLocation || orderData.delivery_location || "",
-      status: orderData.status || "",
-    });
-
-    // Fill flavorTable
-    const newTable = {};
-    if (orderData.flavors) {
-      orderData.flavors.forEach((f) => {
-        // Special flavor: no size or empty size
-        const isSpecial = f.quantities.length === 1 && f.quantities[0].size === "";
-
-        if (isSpecial) {
-          newTable[f.flavor] = {
-            qty: f.quantities[0].qty || "",
-          };
-        } else {
-          newTable[f.flavor] = {};
-          f.quantities.forEach((q) => {
-            newTable[f.flavor][q.size] = { qty: q.qty };
-          });
-        }
+  React.useEffect(() => {
+    if (orderData) {
+      setForm({
+        name: orderData.name || "",
+        caterer: orderData.caterer || "",
+        deliveryDetails: orderData.deliveryDetails || "",
+        contact: orderData.contact || "",
+        deliveryDate: orderData.deliveryDate || orderData.delivery_date || "",
+        deliveryTime: orderData.deliveryTime || orderData.delivery_time || "",
+        deliveryLocation:
+          orderData.deliveryLocation || orderData.delivery_location || "",
+        status: orderData.status || "",
       });
-      setFlavorTable(newTable);
-    }
+      // Fill flavorTable
+      const newTable = {};
+      if (orderData.flavors) {
+        orderData.flavors.forEach((f) => {
+          // Special flavor: no size or empty size
+          const isSpecial =
+            f.quantities.length === 1 && f.quantities[0].size === "";
 
-    setOpen(true);
-  }
-}, [orderData]);
+          if (isSpecial) {
+            newTable[f.flavor] = {
+              qty: f.quantities[0].qty || "",
+            };
+          } else {
+            newTable[f.flavor] = {};
+            f.quantities.forEach((q) => {
+              newTable[f.flavor][q.size] = { qty: q.qty };
+            });
+          }
+        });
+        setFlavorTable(newTable);
+      }
+
+      setOpen(true);
+    }
+  }, [orderData]);
+
+  // Fetch caterer options on mount so datalist is always populated
+  React.useEffect(() => {
+    async function fetchCaterers() {
+      try {
+        const res = await axios.get(
+          "https://inventory-management-5-9dr8.onrender.com/orders/caterers"
+        );
+        const customers = Array.isArray(res.data.customers)
+          ? res.data.customers
+          : [];
+        setCatererOptions([
+          ...new Set(customers.map((c) => c.caterer).filter(Boolean)),
+        ]);
+        const map = {};
+        customers.forEach((c) => {
+          map[c.caterer] = c;
+        });
+        setCustomerMap(map);
+      } catch {
+        setCatererOptions([]);
+        setCustomerMap({});
+      }
+    }
+    fetchCaterers();
+  }, []);
 
   const handleOpenClose = () => {
     setOpen((prev) => !prev);
@@ -162,24 +188,6 @@ React.useEffect(() => {
     }));
   };
 
-  const handleCatererFocus = async () => {
-    try {
-      const res = await axios.get("https://inventory-management-5-9dr8.onrender.com/orders/caterers");
-      // API returns { customers: [ ... ] }
-      const customers = Array.isArray(res.data.customers) ? res.data.customers : [];
-      setCatererOptions(customers.map((c) => c.caterer).filter(Boolean));
-      // Map caterer name to customer details for autofill
-      const map = {};
-      customers.forEach((c) => {
-        map[c.caterer] = c;
-      });
-      setCustomerMap(map);
-    } catch {
-      setCatererOptions([]);
-      setCustomerMap({});
-    }
-  };
-
   const handleCatererSelect = (e) => {
     const caterer = e.target.value;
     setForm((prev) => ({ ...prev, caterer }));
@@ -196,10 +204,10 @@ React.useEffect(() => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-  if (!form.deliveryDate || form.deliveryDate.trim() === "") {
-    alert("Please select a delivery date!");
-    return;
-  }
+    if (!form.deliveryDate || form.deliveryDate.trim() === "") {
+      alert("Please select a delivery date!");
+      return;
+    }
     // Prepare data
     const order = {
       ...form,
@@ -238,7 +246,10 @@ React.useEffect(() => {
         );
         alert("Order updated!");
       } else {
-        await axios.post("https://inventory-management-5-9dr8.onrender.com/orders", order);
+        await axios.post(
+          "https://inventory-management-5-9dr8.onrender.com/orders",
+          order
+        );
         alert("Order submitted!");
       }
       setOpen(false);
@@ -275,14 +286,21 @@ React.useEffect(() => {
                   placeholder="Your Caterer name.."
                   value={form.caterer}
                   onChange={handleCatererSelect}
-                  onFocus={handleCatererFocus}
                   list="caterer-list"
                   autoComplete="off"
+                  onFocus={(e) => (e.target.value = "")}
                 />
-                <datalist id="caterer-list">
-                  {catererOptions.map((option) => (
-                    <option key={option} value={option} />
-                  ))}
+                <datalist
+                  id="caterer-list"
+                  style={{ maxHeight: "180px", overflowY: "auto" }}
+                >
+                  {catererOptions && catererOptions.length > 0 ? (
+                    catererOptions.map((option) => (
+                      <option key={option} value={option} />
+                    ))
+                  ) : (
+                    <option value="No caterers found" disabled />
+                  )}
                 </datalist>
 
                 <label>Delivery Details</label>
@@ -391,7 +409,12 @@ React.useEffect(() => {
                             name={`${flavor.name}-qty`}
                             placeholder="Qty"
                             style={{ width: "60px" }}
-                            value={flavorTable[flavor.name]?.qty || ""}
+                            value={
+                              flavorTable[flavor.name] &&
+                              flavorTable[flavor.name].qty
+                                ? flavorTable[flavor.name].qty
+                                : ""
+                            }
                             onChange={(e) =>
                               setFlavorTable((prev) => ({
                                 ...prev,
