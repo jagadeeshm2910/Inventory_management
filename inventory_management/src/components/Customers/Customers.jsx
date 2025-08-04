@@ -1,6 +1,92 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+function OrdersTable({ orders }) {
+  if (!orders || orders.length === 0) {
+    return <div style={{ color: "#999", padding: 12 }}>No orders found.</div>;
+  }
+  return (
+    <div style={{ height: "300px", overflowY: "auto", width: "100%" }}>
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          background: "#f9f9f9",
+          borderRadius: "8px",
+          marginTop: 8,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+        }}
+      >
+        <thead>
+          <tr style={{ background: "#ffe0ec" }}>
+            <th style={{ padding: "8px", border: "1px solid #eee" }}>Date</th>
+            <th style={{ padding: "8px", border: "1px solid #eee" }}>
+              Delivery Time
+            </th>
+            <th style={{ padding: "8px", border: "1px solid #eee" }}>
+              Delivery Address
+            </th>
+            <th style={{ padding: "8px", border: "1px solid #eee" }}>Status</th>
+            <th style={{ padding: "8px", border: "1px solid #eee" }}>
+              Flavours
+            </th>
+            <th style={{ padding: "8px", border: "1px solid #eee" }}>
+              Total Qty
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order, idx) => (
+            <tr
+              key={order.id}
+              style={{ background: idx % 2 === 0 ? "#fff" : "#f6fef7" }}
+            >
+              <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                {order.date}
+              </td>
+              <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                {order.delivery_time || "-"}
+              </td>
+              <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                {order.delivery_location || "-"}
+              </td>
+              <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                {order.status}
+              </td>
+              <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                {order.flavors && Array.isArray(order.flavors)
+                  ? order.flavors.map((f, i) =>
+                      f.quantities
+                        .filter((q) => q.qty && q.qty !== "0" && q.qty !== "")
+                        .map((q, j) => (
+                          <div key={i + "-" + j}>
+                            {f.flavor} {q.size ? `(${q.size})` : ""} - {q.qty}
+                          </div>
+                        ))
+                    )
+                  : "-"}
+              </td>
+              <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                {order.flavors && Array.isArray(order.flavors)
+                  ? order.flavors.reduce(
+                      (sum, f) =>
+                        sum +
+                        f.quantities.reduce(
+                          (s, q) => s + (parseInt(q.qty) || 0),
+                          0
+                        ),
+                      0
+                    )
+                  : 0}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function Customers() {
   const [customers, setCustomers] = useState([]);
   const [open, setOpen] = useState(false);
@@ -11,12 +97,17 @@ function Customers() {
     contact: "",
   });
   const [loading, setLoading] = useState(false);
+  const [expandedCustomerId, setExpandedCustomerId] = useState(null);
+  const [customerOrders, setCustomerOrders] = useState({});
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   // Fetch customers from backend
   React.useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await axios.get("https://inventory-management-5-9dr8.onrender.com/orders/customers");
+        const res = await axios.get(
+          "https://inventory-management-5-9dr8.onrender.com/orders/customers"
+        );
         setCustomers(res.data);
       } catch {
         setCustomers([]);
@@ -36,20 +127,46 @@ function Customers() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("https://inventory-management-5-9dr8.onrender.com/orders/customers", {
-        name: form.name,
-        caterer: form.caterer,
-        address: form.address,
-        contact: form.contact,
-      });
+      await axios.post(
+        "https://inventory-management-5-9dr8.onrender.com/orders/customers",
+        {
+          name: form.name,
+          caterer: form.caterer,
+          address: form.address,
+          contact: form.contact,
+        }
+      );
       // Refetch customers after adding
-      const res = await axios.get("https://inventory-management-5-9dr8.onrender.com/orders/customers");
+      const res = await axios.get(
+        "https://inventory-management-5-9dr8.onrender.com/orders/customers"
+      );
       setCustomers(res.data);
       handleClose();
     } catch {
       alert("Failed to add customer");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExpand = async (customerId) => {
+    if (expandedCustomerId === customerId) {
+      setExpandedCustomerId(null);
+      return;
+    }
+    setExpandedCustomerId(customerId);
+    if (!customerOrders[customerId]) {
+      setOrdersLoading(true);
+      try {
+        const res = await axios.get(
+          `https://inventory-management-5-9dr8.onrender.com/orders/customer-orders/${customerId}`
+        );
+        setCustomerOrders((prev) => ({ ...prev, [customerId]: res.data }));
+      } catch {
+        setCustomerOrders((prev) => ({ ...prev, [customerId]: [] }));
+      } finally {
+        setOrdersLoading(false);
+      }
     }
   };
 
@@ -102,36 +219,67 @@ function Customers() {
             <th style={{ padding: "10px", border: "1px solid #eee" }}>
               Contact Number
             </th>
+            <th style={{ padding: "10px", border: "1px solid #eee" }}></th>
           </tr>
         </thead>
         <tbody>
           {customers.map((customer, idx) => (
-            <tr
-              key={idx}
-              style={{ background: idx % 2 === 0 ? "#f6fef7" : "#fff" }}
-            >
-              <td
-                style={{
-                  padding: "10px",
-                  border: "1px solid #eee",
-                  textAlign: "center",
-                }}
-              >
-                {idx + 1}
-              </td>
-              <td style={{ padding: "10px", border: "1px solid #eee" }}>
-                {customer.name}
-              </td>
-              <td style={{ padding: "10px", border: "1px solid #eee" }}>
-                {customer.caterer}
-              </td>
-              <td style={{ padding: "10px", border: "1px solid #eee" }}>
-                {customer.address}
-              </td>
-              <td style={{ padding: "10px", border: "1px solid #eee" }}>
-                {customer.contact}
-              </td>
-            </tr>
+            <React.Fragment key={customer.id}>
+              <tr style={{ background: idx % 2 === 0 ? "#f6fef7" : "#fff" }}>
+                <td
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #eee",
+                    textAlign: "center",
+                  }}
+                >
+                  {idx + 1}
+                </td>
+                <td style={{ padding: "10px", border: "1px solid #eee" }}>
+                  {customer.name}
+                </td>
+                <td style={{ padding: "10px", border: "1px solid #eee" }}>
+                  {customer.caterer}
+                </td>
+                <td style={{ padding: "10px", border: "1px solid #eee" }}>
+                  {customer.address}
+                </td>
+                <td style={{ padding: "10px", border: "1px solid #eee" }}>
+                  {customer.contact}
+                </td>
+                <td style={{ padding: "10px", border: "1px solid #eee" }}>
+                  <button
+                    style={{
+                      background: "#ffe0ec",
+                      color: "#333",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "6px 12px",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleExpand(customer.id)}
+                  >
+                    {expandedCustomerId === customer.id
+                      ? "Hide Orders"
+                      : "Show Orders"}
+                  </button>
+                </td>
+              </tr>
+              {expandedCustomerId === customer.id && (
+                <tr>
+                  <td colSpan={6} style={{ padding: 0 }}>
+                    {ordersLoading ? (
+                      <div style={{ padding: 16, color: "#999" }}>
+                        Loading orders...
+                      </div>
+                    ) : (
+                      <OrdersTable orders={customerOrders[customer.id] || []} />
+                    )}
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
