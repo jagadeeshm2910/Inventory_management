@@ -10,3 +10,15 @@
   align-items: center;
   margin-bottom: 20px;
 }
+.main-title {
+  text-align: center;
+  font-family: "Montserrat", "Arial", sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #6a1b9a;
+  margin: 2rem 0 2.5rem 0;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #6a1b9a 0%, #fbc02d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

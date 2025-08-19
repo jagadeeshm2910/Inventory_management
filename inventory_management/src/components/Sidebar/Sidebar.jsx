@@ -11,7 +11,7 @@ const Sidebar = () => {
       {/* {logo} */}
       <div className="logo">
         <span>
-          JP F<span>OO</span>DS
+          T<span>ES</span>T
         </span>
       </div>
       {/* {menu} */}
