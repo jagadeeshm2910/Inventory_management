@@ -13,7 +13,7 @@ const MainDash = () => {
 
   return (
     <div className="MainDash">
-      <h1>Dashboard</h1>
+      <h1 className="main-title">Inventory Management Application</h1>
 
       <NewOrder onOrderSubmitted={handleOrderSubmitted} />
 
